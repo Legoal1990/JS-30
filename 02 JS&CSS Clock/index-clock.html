@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+</head>
+<body>
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand" style="transform:rotate(20deg);"></div> 
+    </div>
+
+
+  <style>
+    html {
+      background: #018DED url(http://unsplash.it/1500/1000?image=881&blur=5);
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+      font-size: 2rem;
+      display: flex;
+      flex: 1;/*Indica la capacidad de un elemento flexible para alterar sus dimensiones y llenar el espacio disponible. Los elementos flexibles pueden ser estirados para utilizar el espacio disponible proporcional a su factor de crecimiento flexible o su factor de contracción flexible para evitar desbordamiento.El valor predeterminado es 1 cuando se omite.*/
+      min-height: 100vh; /* altura del viewport. Las medidas vh y vw son medidas relativas de acuerdo al viewport. Vh hace referencia a la centésima parte de la altura del viewport y vw a la centésima parte del ancho del viewport.*/
+      align-items: center;
+    }
+
+    .clock {
+      width: 30rem; /*rem no es escalable por default 16px. (los navegadores de manera predeterminada definen un font-size de 16px al elemento HTML, por lo tanto, por defecto 1em es igual a 16px*/
+      height: 30rem;
+      border: 20px solid white;
+      border-radius: 50%;
+      margin: 50px auto;
+      position: relative;
+      padding: 2rem;
+      box-shadow: /*añade efectos de sombra alrededor del marco de un elemento. Se pueden definir múltiples efectos separados por comas. La caja de la sombra se describe por los desplazamientos en X e Y, los radios de desenfoque y dispersión, y el color relativos al elemento.*/
+        /*<offset-x> <offset-y> <blur-radius> <spread-radius> <color>*/
+        /*<offset-x> <offset-y> Estos son dos valores <length> para definir el desplazamiento de la sombra. Los valores negativos colocan la sombra por encima del elemento. Si ambos valores son 0, la sombra es ubicada detras del elemento (y puede generar un efecto de difuminación <blur-radius> y/o <spread-radius> está establecido).*/
+        /*blu radius  Cuando mayor sea este valor, mayor sera la difuminación, por consecuencia la sombra se vuelve más grande y ligera. Los valores negativos no son permitidos. Si esto no es especificado, su valor será 0 (el borde de la sombra es fuerte). */
+        /*spread radius Los valores positivos harán que la sombra se expanda y crezca más, los valores negativos harán que la sombra se reduzca de tamaño. Si no se especifica, este será 0 (la sombra será del mismo tamaño del elemento).*/
+        /*Si no se especifica, el color depende del navegador - usualmente el valor de la propiedad color, pero notar que en Safari, actualmente pinta una sombra transparente en este caso que sea omitido.*/
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        /*inset Si no se especifica (por defecto), la sombra asume una sombra difuminada (como si la caja fuera levantada por encima del contenido).
+        La presencia de la palabra clave inset  cambia la sombra a una dentro del marco (como si el contenido estuviera deprimido dentro de la caja). Inset shadows dibuja dentro del borde (incluso de los transparentes), por encima del fondo, pero por debajo del contenido.*/
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-face {
+      position: relative; /*El elemento se posiciona en relación con su posición normal.*/
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: black;
+      position: absolute;
+      top: 50%;
+      /*La propiedad CSS transform te permite modificar el espacio de coordenadas del 
+      modelo de formato visual CSS. Usándola, los elementos pueden ser trasladados, 
+      rotados, escalados o sesgados de acuerdo a los valores establecidos.*/
+      transform-origin: 100%; /*permite modificar el origen de las transformaciones
+       de un elemento. Por ejemplo, el transform-origin de la función rotate() es el 
+       centro de rotación. (Esta propiedad es aplicada a la primera translación del
+       elemento por el valor negativo de la propiedad. */
+       transform:rotate(90deg); /*rotate: Define una operación de rotación 2D de un elemento, específicando la cantidad de 
+       grados (deg) que este rotará en sentido de las macecillas del reloj (según lo 
+       especificado por la propiedad transform-origen).*/
+       transition:all 0.05s; /* Aplicar a todas las propiedades que cambien */
+       transition-timing-function:cubic-bezier(0.1, 2.7, 0.58, 1); /*curva de aceleración 
+       para que la velocidad de la transición pueda variar durante su duración.
+        <timing-function>representa la función de tiempo para vincular a la propiedad correspondiente a la transición*/
+    }
+
+  </style>
+
+  <script>
+    const secondHand=document.querySelector('.second-hand');
+    const minsHand=document.querySelector('.min-hand');
+    const hourHand=document.querySelector('.hour-hand');
+    
+
+    function setDate(){
+      const now=new Date();
+
+      const seconds=now.getSeconds();
+      const secondsDegrees=((seconds/60)*360)+90;
+      secondHand.style.transform=`rotate(${secondsDegrees}deg)`;
+      
+      const mins = now.getMinutes();
+      const minsDegrees = ((mins / 60) * 360) + ((seconds/60)*6) + 90;
+      minsHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+      const hour = now.getHours();
+      const hourDegrees = ((hour / 12) * 360) + ((mins/60)*30) + 90;
+      hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+
+      /*console.log(seconds);*/
+    }
+    setInterval(setDate,1000);
+
+  </script>
+</body>
+</html>

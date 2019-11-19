@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities=[];
+
+/*fetch(endpoint, function(data){
+  console.log(data);
+});*/
+
+/*const prom = fetch(endpoint);
+console.log(prom);*/
+
+//fetch(endpoint).then(blob => console.log(blob));
+
+//fetch(endpoint).then(blob => JSON.parse(blob));
+//fetch(endpoint).then(blob => blob.json(blob)); //Esto queda simplicado así:
+fetch(endpoint)
+  .then(blob => blob.json())
+  .then(data => cities.push(...data)) 
+
+/*Un objeto Blob representa un objeto tipo fichero de  datos planos inmutables. Los Blobs representan datos que no necesariamente se encuentran en un formato nativo de JavaScript. La interfaz File se encuentra basada en un Blob, heredando y expendiendo la funcionalidad de un Blob para soportar archivos en el sistema del usuario.
+Una forma fácil de construir un Blob es invocando el constructor Blob(). Otra manera es utilizando el método slice() para crear un blob que contiene un subconjunto de los datos de otro Blob.
+Blob()
+Regresa un nuevo objeto Blob creado cuyo contenido consiste en la concatenación de un arreglo de valores establecidos en el parámetro de la función.
+*/
+
+/*JSON es una sintaxis para serializar objetos, arreglos, números, cadenas, booleanos y nulos. */
+/*El método JSON.parse() analiza una cadena de texto como JSON, transformando opcionalmente  el valor producido por el análisis.*/
+
+function findMatches(wordToMatch, cities){
+  return cities.filter(place=>{
+    const regex = new RegExp(wordToMatch, 'gi');
+    return place.city.match(regex)||place.state.match(regex)
+  });
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function displayMatches(){
+  const matchArray = findMatches(this.value, cities);
+  const html=matchArray.map(place =>{
+    const regex = new RegExp(this.value, 'gi');
+    const cityName =place.city.replace(regex, `<span class="hl"> ${this.value} </span>`);
+    return `
+      <li>
+        <span class="name">${place.city}, ${place.state}</span>
+        <span class="population">${place.population}</span>
+      </li>
+      `;
+  }).join('');
+
+  suggestions.innerHTML=html;
+}
+
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+
+searchInput.addEventListener('change', displayMatches);
+searchInput.addEventListener('keyup', displayMatches);
+</script>
+</body>
+</html>

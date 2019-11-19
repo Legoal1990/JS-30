@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas> <!--canvas es un elemento HTML el cual puede ser usado para dibujar gráficos usando scripts (normalmente JavaScript). Este puede, por ejemplo, ser usado para dibujar gráficos, realizar composición de fotos o simples (y no tan simples) animaciones.
+canvas es un contenedor para gráficos, no tiene habilidades de dibujo propias-->
+<script>
+const canvas = document.querySelector('#draw');/*querySelector: Devuelve el primer elemento del documento (utilizando un recorrido primero en profundidad pre ordenado de los nodos del documento) que coincida con el grupo especificado de selectores.Los argumentos deben ser pasados con la sintaxis CSS*/
+const ctx = canvas.getContext('2d');/*El getContext()método devuelve un objeto que proporciona métodos y propiedades para dibujar en el lienzo. El 2D objeto, que se pueden usar para dibujar texto, líneas, cuadros, círculos y más, en el lienzo.*/
+/*La propiedad innerWidth en JavaScript devuelve el ancho y la propiedad innerHeight devuelve la altura del área de contenido de la ventana.*/
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55'; /*Establece o devuelve el color, el degradado o el patrón utilizado para los trazos*/
+ctx.lineJoin = 'round';/* bevel biselada / round redondeada / miter afilada Establece o devuelve el tipo de esquina creada, cuando dos líneas se encuentran*/
+ctx.lineCap = 'round'; /* Establece o devuelve el estilo de los extremos de una línea.*/
+/*La propiedad lineCap establece o devuelve el estilo de las mayúsculas para una línea. El valor "redondo" y "cuadrado" hace que las líneas sean un poco más largas.*/
+ctx.lineWidth = 100; /*Propiedad de ancho de línea de lienzo HTML*/
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+function draw(e) {
+  if (!isDrawing) return; // stop the fn from running when they are not moused down
+  console.log(e);
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; //hue tono
+  ctx.beginPath();
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(e.offsetX, e.offsetY); /*Adds a new point and creates a line to that point from the last specified point in the canvas*/
+  ctx.stroke();
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  hue++;
+  if (hue >= 360) {
+    hue = 0;
+  }
+  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+
+  if(direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY]; /*The offset() method set or returns the offset coordinates for the selected elements, relative to the document.*/
+});
+
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
