@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  
+  *, *:before, *:after { 
+    box-sizing: inherit; 
+  }
+
+  div {
+    width: 100%;
+    padding: 100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background: mistyrose;
+  }
+
+  .three {
+    background: coral;
+  }
+</style>
+
+<button></button>
+<script>
+  const divs = document.querySelectorAll('div');
+  const button = document.querySelector('button');
+
+  function logText(e) {
+    console.log(this.classList.value);
+    // e.stopPropagation(); // stop bubbling! Para que no llegue hasta el nodo padre
+    // console.log(this);
+  }
+
+  divs.forEach(div => div.addEventListener('click', logText, {
+    capture: false, //Al ser falso se ejecutará bubbling 3 2 1
+    once: true
+  }));
+
+  button.addEventListener('click', () => {
+    console.log('Click!!!');
+  }, {
+    once: true  //Desvincula el evento para que solo se ejecute una vez
+  });
+//Bubbling el evento se desencadena desde el elemento que ha hecho click en la parte superior hasta el interior
+//Capture Comienza de arriba a abajo 1 2 3 hasta el elemento que activo el evento Por ultimo el elemento al que hicimos click
+
+</script>
+</body>
+</html>

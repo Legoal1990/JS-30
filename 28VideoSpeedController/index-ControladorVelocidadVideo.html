@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Speed Scrubber</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="wrapper">
+    <video class="flex" width="765" height="430" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" loop controls></video>
+    <p>
+    <div class="speed">
+      <div class="speed-bar">1×</div>
+    </div>
+  </div>
+
+<script>
+  const speed = document.querySelector('.speed'); //querySelector devuelve el primer elemento del documento que coincida con el grupo especificado de selectores
+  const bar = speed.querySelector('.speed-bar');
+  const video = document.querySelector('.flex');
+
+  function handleMove(e) {
+      const y = e.pageY - this.offsetTop; //pageY propiedad de lectura del evento MouseEvent regresa la coordenada Y en pixeles en relación con todo el documento.
+                                          //offsetTop regresa la posición Top en pixeles relativos al top de los elementos y margen del elemento
+      const percent = y / this.offsetHeight; //offetHeight devuelve el alto de un elemento incluyendo el padding vertical y los bordes en pixeles como un número entero.
+      const min = 0.4;
+      const max = 4;
+      const height = Math.round(percent * 100) + '%';
+      const playbackRate = percent * (max - min) + min;
+      bar.style.height = height; // style Es el elemento encargado de indicar la información de estilo.<style> y </style> 
+      bar.textContent = playbackRate.toFixed(2) + '×'; //TextContent asigna o retorna el texto contenido en un nodo específico y todos sus descendientes
+                                                       //toFixed convierte un número a string manteniendo solo 2 decimales
+      video.playbackRate = playbackRate;
+    }
+
+  speed.addEventListener('mousemove', handleMove);
+
+</script>
+</body>
+</html>
